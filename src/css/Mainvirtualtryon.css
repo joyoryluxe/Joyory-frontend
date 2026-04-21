@@ -1,0 +1,419 @@
+/* .virtual-tryon {
+  padding: 20px;
+}
+
+.tabs {
+  border-bottom: 1px solid #ddd;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 8px 12px;
+  cursor: pointer;
+  color: #777;
+}
+
+.tab-btn.active {
+  color: #000;
+  border-bottom: 2px solid #000;
+}
+
+.camera-box {
+  background: #f8f8f8;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.webcam {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.action-icons {
+  position: absolute;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  top: 20%;
+  font-size: 20px;
+  color: #216a8d;
+  cursor: pointer;
+}
+
+.product-slider {
+  padding: 10px;
+}
+
+.product-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
+}
+
+.product-card img {
+  max-height: 180px;
+  object-fit: cover;
+}
+
+
+.shade-overlay {
+  position: absolute;
+  top: 30%; 
+  left: 30%;
+  width: 40%; 
+  opacity: 0.6; 
+  pointer-events: none;
+} */
+
+
+/* 
+.overlay-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.shade-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+
+
+
+
+.virtual-tryon {
+  max-width: 1200px;
+}
+
+.tryon-camera-wrapper {
+  width: 100%;
+  max-width: 480px;
+}
+
+.overlay-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.shade-dot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.shade-dot:hover {
+  transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+  .tryon-camera-wrapper {
+    max-width: 100%;
+  }
+
+  .shade-dot {
+    width: 25px;
+    height: 25px;
+  }
+
+  .virtual-tryon h5,
+  .virtual-tryon h6 {
+    text-align: center;
+  }
+} */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* --------------  VirtualTryOn.css  -------------- */
+.virtual-tryon-wrapper {
+  --nykaa-pink: #fc2779;
+  --nykaa-grey: #f4f6f9;
+  font-family: "Inter", sans-serif;
+}
+
+.camera-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.camera-box {
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: #000;
+  position: relative;
+}
+
+.camera-feed {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.overlay-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.camera-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--nykaa-grey);
+}
+
+.btn-upload {
+  padding: 8px 14px;
+  background: var(--nykaa-pink);
+  color: #fff;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.btn-upload:hover {
+  background: #e01665;
+}
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.btn-icon:hover {
+  border-color: var(--nykaa-pink);
+  color: var(--nykaa-pink);
+}
+
+.btn-retake {
+  margin-left: auto;
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid #999;
+  border-radius: 16px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.btn-retake:hover {
+  border-color: #333;
+}
+
+/* -----  RIGHT SIDE  ----- */
+.controls-column {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.block-title {
+  font-weight: 600;
+  font-size: 16px;
+  margin: 0 0 10px;
+}
+
+.product-card {
+  background: #fff;
+  border-radius: 12px;
+  /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); */
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.product-card:hover {
+  transform: translateY(-3px);
+}
+/* .product-card img {
+  width: 100%;
+  height: 110px;
+  object-fit: contain;
+  border-radius: 8px;
+  margin-bottom: 6px;
+} */
+
+.shade-palette {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+.shade-swatch {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.shade-swatch.active {
+  border-color: var(--nykaa-pink);
+  transform: scale(1.15);
+}
+
+.area-selector {
+  display: flex;
+  gap: 12px;
+}
+.btn-area {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: #fff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.btn-area:hover {
+  border-color: var(--nykaa-pink);
+  color: var(--nykaa-pink);
+}
+
+.btn-reset {
+  padding: 6px 14px;
+  background: transparent;
+  border: 1px solid #999;
+  border-radius: 16px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.btn-reset:hover {
+  border-color: #333;
+}
+
+/* -----  SLICK OVERRIDE  ----- */
+.slick-slide {
+  padding: 0 6px;
+}
+.slick-list {
+  margin: 0 -6px;
+}
+
+
+
+
+
+
+/* ----------  ADD TO VirtualTryOn.css  ---------- */
+.category-pills {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+.pill {
+  padding: 6px 14px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  background: #fff;
+  font-size: 14px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.pill.active {
+  background: var(--nykaa-pink);
+  color: #fff;
+  border-color: var(--nykaa-pink);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

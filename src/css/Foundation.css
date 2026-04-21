@@ -1,0 +1,40 @@
+/* src/css/FormulationSelection.css */
+
+
+/* .formulation-card {
+    border: 2px solid transparent;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.formulation-card img {
+    width: 100%;
+    height: auto;
+}
+
+.formulation-card .label {
+    padding: 10px;
+    font-weight: 600;
+    background: #f9f9f9af;
+    color: #555;
+    position: absolute;
+    top: 88%;
+    width: 100%;
+}
+
+.formulation-card.selected {
+    border: 2px solid #0d6efd;
+    Bootstrap primary blue
+
+box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+
+}
+.formulation-card.selected .label {
+    color: #0d6efd;
+}
+*/

@@ -1,0 +1,244 @@
+.virtualtryon-container {
+  color: #333;
+  background-color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+
+/* Hero Section */
+.hero-section {
+  width: 100%;
+  height: 50vh;
+  background-image: url("../assets/Virtual-tryon.webp");
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 5%;
+}
+
+
+@media (max-width:768px) {
+  .hero-section {
+    width: 100%;
+    height: 12vh;
+    background-image: url("../assets/Virtual-tryon.webp");
+    background-size: contain;
+    /* background-position: center; */
+    position: relative;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 5%;
+  }
+
+  .hero-section {
+    height: 14vh;
+  }
+}
+
+
+
+@media (max-width:1300px) {
+  .hero-section {
+    width: 100%;
+    height: 19vh;
+    background-image: url(/src/assets/Virtual-tryon.webp);
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 5%;
+    background-repeat: no-repeat;
+  }
+}
+
+.hero-content {
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero-title {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.hero-subtitle {
+  font-size: 1.5rem;
+}
+
+/* How It Works Section */
+.how-it-works-section {
+  width: 100%;
+  padding: 2rem 5%;
+  text-align: center;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  text-align: start;
+}
+
+.steps-container {
+  display: flex;
+  justify-content: space-between;
+  /* flex-wrap: wrap; */
+  gap: 1rem;
+}
+
+.step-card {
+  width: 250px;
+  text-align: center;
+}
+
+.step-image {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  /* border-radius: 8px; */
+  margin-bottom: 1rem;
+}
+
+.step-number {
+  font-size: 1.2rem;
+  color: #666;
+  text-align: start;
+}
+
+.step-description {
+  font-size: 1rem;
+  color: #666;
+  text-align: start;
+}
+
+
+
+@media (max-width: 600px) {
+  .steps-container {
+    flex-direction: column !important;
+    align-items: center;
+  }
+}
+
+
+
+@media (min-width: 1023px) {
+.next-button-container {
+  width: 100%;
+  text-align: -webkit-right;
+  padding: 1.3rem 5% 1rem 5%;
+  position: fixed;
+  bottom: 0;
+}
+}
+
+
+
+/* Next Button */
+
+
+.next-button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.next-icon {
+  font-size: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+
+  .hero-title {
+    font-size: 1.8rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.2rem;
+  }
+
+  .steps-container {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .step-card {
+    width: 80%;
+    margin-bottom: 2rem;
+  }
+
+  /* .next-button-container {
+    width: 100%;
+    text-align: -webkit-center;
+    padding: 1.3rem 5% 1rem 5%;
+    position: fixed;
+    bottom: 0;
+    margin-bottom: 90px;
+  } */
+}
+
+
+@media (max-width:1024px) {
+    .next-button-container {
+    width: 100%;
+    text-align: -webkit-center;
+    padding: 1.3rem 5% 1rem 5%;
+    position: fixed;
+    bottom: 0;
+    margin-bottom: 70px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-section {
+    height: 25vh;
+  }
+
+
+  .hero-section {
+    width: 100%;
+    height: 12vh;
+    background-image: url("../assets/Virtual-tryon.webp");
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 5%;
+  }
+
+
+
+  .hero-title {
+    font-size: 1.5rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .step-image {
+    height: 200px;
+  }
+}

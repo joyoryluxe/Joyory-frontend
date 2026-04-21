@@ -1,0 +1,153 @@
+.background-images {
+    background-image: url(../assets/Shadefinder.png);
+    background-size: contain;
+    height: 600px;
+    background-repeat: no-repeat;
+    margin-left: 1px;
+    overflow: hidden;
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+}
+
+.title {
+    text-align: center;
+}
+
+.overflow {
+    overflow-x: hidden !important;
+}
+
+.sub-title-shadefinder {
+    color: #3E3E3E;
+    font-weight: 100 !important;
+    font-size: 14px;
+}
+
+.ledtsgobutton {
+    height: 50px;
+    width: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #3F3F3F;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    gap: 5px;
+}
+
+.leftsgobtn-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;
+    text-decoration: none;
+}
+
+.shadefinder-doot {
+    min-height: 30px !important;
+}
+
+@media (max-width:1023px) {
+    .ledtsgobutton {
+        width: 75%;
+    }
+    /* .shadefinder-doot{
+    min-height: 30px !important;  
+    } */
+}
+
+@media (max-width:992px) {
+    .flex {
+        display: block;
+    }
+    .background-images {
+        background-image: url(../assets/Shadefinder.png);
+        background-size: contain;
+        height: 600px;
+        background-repeat: no-repeat;
+        margin-left: 1px;
+        width: 100%;
+        background-position: center;
+    }
+}
+
+@media (max-width:768px) {
+    .right-arrow-image {
+        width: 8% !important;
+    }
+}
+
+
+/* .skin-tone-selector {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+} */
+
+.gradient-bar {
+    position: relative;
+}
+
+.category-label:hover {
+    opacity: 1 !important;
+    color: #fff !important;
+}
+
+.shade-card {
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.shade-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.shade-card img {
+    transition: transform 0.3s ease;
+}
+
+.shade-card:hover img {
+    transform: scale(1.05);
+}
+
+
+/* Responsive Adjustments */
+
+@media (max-width: 768px) {
+    .gradient-bar {
+        height: 400px !important;
+    }
+    .category-labels {
+        height: 400px !important;
+    }
+    .skin-tone-selector {
+        padding-bottom: 80px;
+    }
+}
+
+@media (max-width: 576px) {
+    .gradient-bar {
+        height: 350px !important;
+        width: 3px !important;
+    }
+    .category-labels {
+        height: 350px !important;
+    }
+    .shade-card-wrapper {
+        aspect-ratio: 3/4;
+    }
+}
+
+
+/* Smooth scrolling for mobile */
+
+
+/* @media (max-width: 991px) {
+  .container-fluid {
+    max-width: 100%;
+  }
+} */

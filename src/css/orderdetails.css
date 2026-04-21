@@ -1,0 +1,13 @@
+@media (max-width:560px) {
+    .responsive-design-mobile {
+        width: 100%;
+    }
+    .font-size-in-responsive {
+        font-size: 14px;
+    }
+}
+
+
+/* .font-size-in-responsive {
+    font-size: 25px;
+} */
