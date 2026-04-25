@@ -2075,8 +2075,8 @@ const Mobileheaderview = ({
   // ==================== PROTECTED NAVIGATION ====================
   const handleProtectedNavigation = (path, label) => {
     if (!user || user.guest) {
-      navigate("/login", { 
-        state: { from: path, message: `Please login to access ${label}` } 
+      navigate("/login", {
+        state: { from: path, message: `Please login to access ${label}` }
       });
       closeMenu();
       return;
@@ -2100,9 +2100,9 @@ const Mobileheaderview = ({
           <div key={sub._id} className="mobile-subcategory-item ps-3 page-title-main-name">
             <div className="d-flex align-items-center justify-content-between">
               {/* Sub Category → Product Listing Page */}
-              <Link 
-                to={`/products/category/${sub.slug}`} 
-                onClick={closeMenu} 
+              <Link
+                to={`/products/category/${sub.slug}`}
+                onClick={closeMenu}
                 className="mobile-subcategory-link p-0"
               >
                 {sub.name}
@@ -2138,10 +2138,10 @@ const Mobileheaderview = ({
       {showMobileSearch && (
         <div className="mobile-search-overlay">
           <div className="mobile-search-header">
-             <FaArrowLeft className="mobile-search-back" onClick={handleMobileSearchBack} />
-             <form onSubmit={handleSearchSubmit} className="mobile-search-input-container">
-               <FaSearch className="mobile-search-icon" />
-               <input
+            <FaArrowLeft className="mobile-search-back" onClick={handleMobileSearchBack} />
+            <form onSubmit={handleSearchSubmit} className="mobile-search-input-container">
+              <FaSearch className="mobile-search-icon" />
+              <input
                 className="w-100 border-0 bg-transparent page-title-main-name"
                 ref={searchInputRef}
                 type="text"
@@ -2223,7 +2223,7 @@ const Mobileheaderview = ({
                 <small>Try different keywords</small>
               </div>
             )}
-           </div>
+          </div>
         </div>
       )}
 
@@ -2276,9 +2276,9 @@ const Mobileheaderview = ({
                 <div key={cat._id} className="mobile-category-item">
                   <div className="mobile-category-main">
                     {/* Main Category Click → Category Landing Page */}
-                    <Link 
-                      to={`/category/${cat.slug}`} 
-                      onClick={closeMenu} 
+                    <Link
+                      to={`/category/${cat.slug}`}
+                      onClick={closeMenu}
                       className="mobile-category-name page-title-main-name p-0"
                     >
                       {cat.name}

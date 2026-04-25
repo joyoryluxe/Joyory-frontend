@@ -141,7 +141,7 @@ import Foryou from "./Foryou";
 import BrandsSlider from "./BrandsSlider";
 import Hero from "./Hero";
 import OffersSlider from "./OffersSlider";
-import Chatbot from "./Chatbot";
+// import Chatbot from "./Chatbot";
 import SkinTypes from "./Skintypes";
 import VideoSlider from "./VideoSlider";
 import banner from "../assets/banner.jpg";
@@ -235,9 +235,9 @@ function Home() {
       <Certificate />
       {/* <VideoSlider /> */}
 
-      <div>
+{/* <div>
         <Chatbot />
-      </div>
+      </div> */}
 
       <Footer />
     </>

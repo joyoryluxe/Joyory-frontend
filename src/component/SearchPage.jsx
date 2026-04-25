@@ -5416,8 +5416,11 @@ const SearchPage = () => {
 
     if (filters.categoryIds.length > 0) {
       result = result.filter(p => {
-        const catId = typeof p.category === 'object' ? p.category?._id : p.category;
-        return filters.categoryIds.includes(catId);
+        const pCat = p.category;
+        const pCatId = typeof pCat === 'object' ? pCat?._id : pCat;
+        const pCatSlug = typeof pCat === 'object' ? pCat?.slug : null;
+
+        return filters.categoryIds.some(cid => cid === pCatId || (pCatSlug && cid === pCatSlug));
       });
     }
 
@@ -5594,15 +5597,32 @@ const SearchPage = () => {
     });
   }, []);
 
+  const handleCategoryPillClick = useCallback((cat) => {
+    const catId = cat._id || cat.slug;
+    setFilters(prev => {
+      // For search results, we typically want to drill down into one category path
+      // but we can also allow multiple if we want. 
+      // To match ProductPage feel, let's treat the last selected as the "active" one
+      return {
+        ...prev,
+        categoryIds: [catId] // In search, we'll just set it to the selected one for simplicity
+      };
+    });
+  }, []);
+
+  const activeCategorySlug = useMemo(() => {
+    return filters.categoryIds.length > 0 ? filters.categoryIds[filters.categoryIds.length - 1] : null;
+  }, [filters.categoryIds]);
+
   const brandFilterProps = {
     filters,
     setFilters,
     filterData,
     trendingCategories,
-    activeCategorySlug: null,
+    activeCategorySlug,
     activeCategoryName: "",
-    onClearCategory: handleClearAllFilters,
-    onCategoryPillClick: () => { },
+    onClearCategory: () => setFilters(prev => ({ ...prev, categoryIds: [] })),
+    onCategoryPillClick: handleCategoryPillClick,
   };
 
   // ==================== PRODUCT CARD ====================
@@ -6167,54 +6187,57 @@ const SearchPage = () => {
                 )}
               </div>
 
-              {isLoading && allProducts.length === 0 ? (
-                <div className="loading-state text-center py-5">
-                  <FaSpinner className="spin large-spinner" />
-                  if (loading)
-                  return (
-                  <div
-                    className="fullscreen-loader page-title-main-name"
-                    style={{
-                      minHeight: "100vh",
-                      width: "100%",
-                    }}
-                  >
-                    <div className="text-center">
-                      <DotLottieReact className='foryoulanding-css'
-                        src="https://lottie.host/73673e65-df58-41a5-87e7-b837c5d00fe8/dJVGVbJuYJ.lottie"
-                        loop
-                        autoplay
-                      />
-                      <p className="text-muted mb-0">
-                        Please wait while we prepare the best products for you...
-                      </p>
-                    </div>
-                  </div>
-                  );
-                </div>
-              ) : error ? (
+              {error ? (
                 <div className="error-box text-center py-5">
                   <FaRegSadTear size={40} />
                   <p>{error}</p>
                   <button onClick={() => window.location.reload()}>Retry</button>
                 </div>
-              ) : filteredProducts.length === 0 ? (
-                <div className="no-results text-center py-5">
-                  <FaSearch size={64} className="text-muted mb-3" />
-                  <h3>No matches found</h3>
-                  <p className="text-muted">Try different keywords or adjust your filters.</p>
-                  {(searchTerm || isAnyFilterActive) && (
-                    <button className="btn btn-dark mt-3" onClick={() => {
-                      clearSearch();
-                      handleClearAllFilters();
-                    }}>
-                      Clear All
-                    </button>
-                  )}
-                </div>
               ) : (
-                <div className="row g-4">
-                  {filteredProducts.map(renderProductCard)}
+                <div className="row g-4 position-relative">
+                  {/* Loading Overlay */}
+                  {isLoading && allProducts.length > 0 && (
+                    <div className="position-absolute w-100 h-100 d-flex justify-content-center align-items-start pt-5"
+                      style={{ background: 'rgba(255,255,255,0.6)', zIndex: 10, borderRadius: '15px', minHeight: '400px' }}>
+                      <div className="text-center sticky-top" style={{ top: '200px' }}>
+                        <DotLottieReact className='foryoulanding-css'
+                          src="https://lottie.host/73673e65-df58-41a5-87e7-b837c5d00fe8/dJVGVbJuYJ.lottie"
+                          loop
+                          autoplay
+                          style={{ width: '150px', height: '150px' }}
+                        />
+                        <p className="page-title-main-name fw-bold">Searching inventory...</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {filteredProducts.length > 0 ? (
+                    filteredProducts.map(renderProductCard)
+                  ) : isLoading ? (
+                    <div className="col-12 text-center py-5">
+                       <DotLottieReact className='foryoulanding-css'
+                          src="https://lottie.host/73673e65-df58-41a5-87e7-b837c5d00fe8/dJVGVbJuYJ.lottie"
+                          loop
+                          autoplay
+                          style={{ width: '200px', height: '200px', margin: '0 auto' }}
+                        />
+                        <p className="text-muted">Fetching products...</p>
+                    </div>
+                  ) : (
+                    <div className="no-results text-center py-5">
+                      <FaSearch size={64} className="text-muted mb-3" />
+                      <h3>No matches found</h3>
+                      <p className="text-muted">Try different keywords or adjust your filters.</p>
+                      {(searchTerm || isAnyFilterActive) && (
+                        <button className="btn btn-dark mt-3" onClick={() => {
+                          clearSearch();
+                          handleClearAllFilters();
+                        }}>
+                          Clear All
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
             </div>

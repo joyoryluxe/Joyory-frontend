@@ -5243,7 +5243,7 @@
 
 
 /* ProductPage – Unified API & Full Feature Edition with Multi-Filter Support */
-import React, { useState, useEffect, useContext, useRef, useCallback } from "react";
+import React, { useState, useEffect, useContext, useRef, useCallback, useMemo } from "react";
 import { useParams, useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { FaStar, FaHeart, FaRegHeart, FaChevronDown } from "react-icons/fa";
 import Header from "./Header";
@@ -5294,15 +5294,15 @@ const getBrandName = (p) => {
 };
 
 export default function ProductPage() {
-    const { slug } = useParams();
-    const { "*": categoryPath } = useParams();
+    const params = useParams();
+    const slug = params.slug || params["*"];
     const navigate = useNavigate();
     const location = useLocation();
     const [searchParams, setSearchParams] = useSearchParams();
 
     let effectiveSlug = slug;
-    if (location.pathname.startsWith("/category/") && categoryPath) {
-        const segments = categoryPath.split("/");
+    if (slug && slug.includes("/")) {
+        const segments = slug.split("/");
         effectiveSlug = segments[segments.length - 1];
     }
 
@@ -5319,9 +5319,10 @@ export default function ProductPage() {
 
     const [filterData, setFilterData] = useState(null);
 
-    const [activeCategorySlug, setActiveCategorySlug] = useState(() =>
-        location.pathname.includes("/category/") && effectiveSlug ? effectiveSlug : null
-    );
+    const activeCategorySlug = useMemo(() => {
+        return location.pathname.includes("/category/") && effectiveSlug ? effectiveSlug : null;
+    }, [location.pathname, effectiveSlug]);
+
     const [activeCategoryName, setActiveCategoryName] = useState("");
 
     const [selectedVariants, setSelectedVariants] = useState({});
@@ -5334,17 +5335,39 @@ export default function ProductPage() {
     const [wishlistLoading, setWishlistLoading] = useState({});
     const [wishlistData, setWishlistData] = useState([]);
 
-    const [filters, setFilters] = useState({
-        brandIds: [],
-        categoryIds: [],
-        skinTypes: [],
-        formulations: [],
-        finishes: [],
-        ingredients: [],
-        priceRange: null,
-        discountMin: null,  // Changed from discountRange to discountMin for API compatibility
-        minRating: "",
-        sort: "recent",
+    const [filters, setFilters] = useState(() => {
+        const initial = {
+            brandIds: [], categoryIds: [], skinTypes: [], formulations: [],
+            finishes: [], ingredients: [], priceRange: null, discountMin: null,
+            minRating: "", sort: "recent"
+        };
+        const getMultiParam = (key) => {
+            const values = searchParams.getAll(key);
+            if (values.length > 0) return values;
+            const commaValue = searchParams.get(key);
+            if (commaValue) return commaValue.split(',').map(s => s.trim()).filter(Boolean);
+            return [];
+        };
+        ['ingredients', 'skinTypes', 'brandIds', 'categoryIds', 'formulations', 'finishes'].forEach(key => {
+            initial[key] = getMultiParam(key);
+        });
+        const minPrice = searchParams.get('minPrice');
+        const maxPrice = searchParams.get('maxPrice');
+        if (minPrice !== null || maxPrice !== null) {
+            initial.priceRange = {
+                min: minPrice ? parseFloat(minPrice) : 0,
+                max: maxPrice ? parseFloat(maxPrice) : null,
+            };
+        }
+        const discountMin = searchParams.get('discountMin');
+        if (discountMin !== null) initial.discountMin = parseFloat(discountMin);
+        const minRating = searchParams.get('minRating');
+        if (minRating !== null) initial.minRating = minRating;
+        const sortParam = searchParams.get('sort');
+        if (sortParam !== null && ['recent', 'priceHighToLow', 'priceLowToHigh'].includes(sortParam)) {
+            initial.sort = sortParam;
+        }
+        return initial;
     });
 
     const [showFilterOffcanvas, setShowFilterOffcanvas] = useState(false);
@@ -5436,7 +5459,6 @@ export default function ProductPage() {
         }
     };
 
-    /* ── fetch products ─────────────────────────────────────────────────────── */
     const buildQueryParams = (cursor = null) => {
         const p = new URLSearchParams();
         const path = location.pathname.toLowerCase();
@@ -5447,9 +5469,14 @@ export default function ProductPage() {
             p.append("categoryIds", effectiveSlug);
         } else if (path.includes("/skintype/")) {
             p.append("skinTypes", effectiveSlug);
+        } else if (path.includes("/ingredients/")) {
+            p.append("ingredients", effectiveSlug);
         } else if (path.includes("/promotion/")) {
             p.append("promoSlug", effectiveSlug);
         }
+
+        const q = searchParams.get("q") || searchParams.get("search");
+        if (q) p.append("q", q);
 
         filters.brandIds?.forEach((id) => p.append("brandIds", id));
         filters.categoryIds?.forEach((id) => p.append("categoryIds", id));
@@ -5483,7 +5510,7 @@ export default function ProductPage() {
         try {
             if (reset) {
                 setLoading(true);
-                setAllProducts([]);
+                // Keep allProducts as is until fetch completes for a smoother feel
                 setNextCursor(null);
                 setHasMore(true);
             } else {
@@ -5496,10 +5523,13 @@ export default function ProductPage() {
             );
 
             // title & banner
-            if (data.titleMessage) setPageTitle(data.titleMessage);
+            const q = searchParams.get("q") || searchParams.get("search");
+            if (q) setPageTitle(`Search Results for "${q}"`);
+            else if (data.titleMessage) setPageTitle(data.titleMessage);
             else if (data.category?.name) setPageTitle(data.category.name);
             else if (data.promoMeta?.name) setPageTitle(data.promoMeta.name);
             else if (data.skinType?.name) setPageTitle(data.skinType.name);
+            else setPageTitle("Products");
 
             // if (data.bannerImage && Array.isArray(data.bannerImage)) {
             //     setBannerImage(data.bannerImage[0]?.url || data.bannerImage[0] || "");
@@ -5579,13 +5609,11 @@ export default function ProductPage() {
 
     useEffect(() => {
         if (location.pathname.includes("/category/") && effectiveSlug) {
-            setActiveCategorySlug(effectiveSlug);
             if (trendingCategories.length > 0) {
                 const found = trendingCategories.find(c => c.slug === effectiveSlug);
                 if (found) setActiveCategoryName(found.name);
             }
         } else {
-            setActiveCategorySlug(null);
             setActiveCategoryName("");
         }
     }, [effectiveSlug, location.pathname, trendingCategories]);
@@ -5651,30 +5679,24 @@ export default function ProductPage() {
 
     /* ── Parse URL query parameters on mount (FIXED) ────────────────────────────── */
     useEffect(() => {
-        const initialFilters = { ...filters };
-        let hasChanges = false;
+        const initialFilters = {
+            brandIds: [], categoryIds: [], skinTypes: [], formulations: [],
+            finishes: [], ingredients: [], priceRange: null, discountMin: null,
+            minRating: "", sort: "recent"
+        };
 
         const getMultiParam = (key) => {
             const values = searchParams.getAll(key);
             if (values.length > 0) return values;
             const commaValue = searchParams.get(key);
-            if (commaValue) {
-                return commaValue.split(',').map(s => s.trim()).filter(Boolean);
-            }
+            if (commaValue) return commaValue.split(',').map(s => s.trim()).filter(Boolean);
             return [];
         };
 
-        // Restore all array-based filters
-        const arrayKeys = ['ingredients', 'skinTypes', 'brandIds', 'categoryIds', 'formulations', 'finishes'];
-        arrayKeys.forEach(key => {
-            const values = getMultiParam(key);
-            if (values.length > 0) {
-                initialFilters[key] = values;
-                hasChanges = true;
-            }
+        ['ingredients', 'skinTypes', 'brandIds', 'categoryIds', 'formulations', 'finishes'].forEach(key => {
+            initialFilters[key] = getMultiParam(key);
         });
 
-        // Restore price range
         const minPrice = searchParams.get('minPrice');
         const maxPrice = searchParams.get('maxPrice');
         if (minPrice !== null || maxPrice !== null) {
@@ -5682,34 +5704,26 @@ export default function ProductPage() {
                 min: minPrice ? parseFloat(minPrice) : 0,
                 max: maxPrice ? parseFloat(maxPrice) : null,
             };
-            hasChanges = true;
         }
 
-        // Restore discountMin
         const discountMin = searchParams.get('discountMin');
-        if (discountMin !== null) {
-            initialFilters.discountMin = parseFloat(discountMin);
-            hasChanges = true;
-        }
+        if (discountMin !== null) initialFilters.discountMin = parseFloat(discountMin);
 
-        // Restore minRating
         const minRating = searchParams.get('minRating');
-        if (minRating !== null) {
-            initialFilters.minRating = minRating;
-            hasChanges = true;
-        }
+        if (minRating !== null) initialFilters.minRating = minRating;
 
-        // Restore sort
         const sortParam = searchParams.get('sort');
-        if (sortParam && ['recent', 'priceHighToLow', 'priceLowToHigh'].includes(sortParam)) {
+        if (sortParam !== null && ['recent', 'priceHighToLow', 'priceLowToHigh'].includes(sortParam)) {
             initialFilters.sort = sortParam;
-            hasChanges = true;
         }
 
-        if (hasChanges) {
-            setFilters(initialFilters);
-            console.log("✅ Filters restored from URL:", initialFilters);
-        }
+        setFilters(prev => {
+            if (JSON.stringify(prev) !== JSON.stringify(initialFilters)) {
+                console.log("✅ Filters restored from URL:", initialFilters);
+                return initialFilters;
+            }
+            return prev;
+        });
     }, [searchParams]);   // ← Important: depend on searchParams
 
 
@@ -5748,9 +5762,13 @@ export default function ProductPage() {
         }
     }, [filters, setSearchParams, searchParams]);
 
-    // Fetch products when filters or page context change
+    // Fetch products when filters or page context change with a small debounce
     useEffect(() => {
-        fetchProducts(null, true);
+        const timer = setTimeout(() => {
+            fetchProducts(null, true);
+        }, 400); // 400ms debounce for efficiency
+
+        return () => clearTimeout(timer);
     }, [effectiveSlug, location.pathname, filters, activeCategorySlug]);
 
     /* ── helpers ────────────────────────────────────────────────────────────── */
@@ -5764,21 +5782,35 @@ export default function ProductPage() {
 
     /* ── CATEGORY PILL CLICK ────────────────────────────────────────────────── */
     const handleCategoryPillClick = useCallback((cat) => {
-        if (activeCategorySlug === cat.slug) {
-            setActiveCategorySlug(pageDefault);
-            setActiveCategoryName(pageDefault ? trendingCategories.find((c) => c.slug === pageDefault)?.name || "" : "");
+        // Hierarchical navigation: preserve parent segments if they exist
+        if (slug && slug.includes("/")) {
+            const segments = slug.split("/");
+            // Replace the last segment with the new category slug
+            segments[segments.length - 1] = cat.slug;
+            navigate(`/category/${segments.join("/")}`);
+        } else if (slug) {
+            // If we are at /category/skin, append the subcategory to make it hierarchical
+            navigate(`/category/${slug}/${cat.slug}`);
         } else {
-            setActiveCategorySlug(cat.slug);
-            setActiveCategoryName(cat.name);
-            setFilters(makeEmptyFilters());
+            // Fallback for cases where slug is not present
+            navigate(`/category/${cat.slug}`);
         }
-    }, [activeCategorySlug, pageDefault, trendingCategories]);
+    }, [navigate, slug]);
 
     const handleClearCategory = useCallback(() => {
-        setActiveCategorySlug(pageDefault);
-        setActiveCategoryName(pageDefault ? trendingCategories.find((c) => c.slug === pageDefault)?.name || "" : "");
-        setFilters(makeEmptyFilters());
-    }, [pageDefault, trendingCategories]);
+        if (slug && slug.includes("/")) {
+            const segments = slug.split("/");
+            segments.pop(); // Go up one level
+            const newPath = segments.join("/");
+            if (newPath) {
+                navigate(`/category/${newPath}`);
+            } else {
+                navigate("/products");
+            }
+        } else {
+            navigate("/products");
+        }
+    }, [navigate, slug]);
 
     /* ── Click Handlers ─────────────────────────────────────────────────────── */
     const handleSkinTypeClick = useCallback((skin) => {
@@ -5792,16 +5824,16 @@ export default function ProductPage() {
         });
     }, []);
 
-    // const handleIngredientClick = useCallback((ing) => {
-    //     setFilters(prev => {
-    //         const current = prev.ingredients || [];
-    //         const isActive = current.includes(ing.slug);
-    //         return {
-    //             ...prev,
-    //             ingredients: isActive ? current.filter(i => i !== ing.slug) : [...current, ing.slug]
-    //         };
-    //     });
-    // }, []);
+    const handleIngredientClick = useCallback((ing) => {
+        setFilters(prev => {
+            const current = prev.ingredients || [];
+            const isActive = current.includes(ing.slug);
+            return {
+                ...prev,
+                ingredients: isActive ? current.filter(i => i !== ing.slug) : [...current, ing.slug]
+            };
+        });
+    }, []);
 
 
 
@@ -5962,9 +5994,9 @@ export default function ProductPage() {
                         cursor: wishlistLoading[prod._id] ? "not-allowed" : "pointer",
                         color: inWl ? "#dc3545" : "#ccc", fontSize: 22, zIndex: 2,
                         backgroundColor: "transparent",
-                         borderRadius: "50%",
+                        borderRadius: "50%",
                         width: 34, height: 34, display: "flex", alignItems: "center",
-                        justifyContent: "center", 
+                        justifyContent: "center",
                         // boxShadow: "0 2px 4px rgba(0,0,0,.1)",
                         transition: "all .3s ease", border: "none",
                     }}
@@ -6109,29 +6141,7 @@ export default function ProductPage() {
     };
 
 
-    if (loading)
-        return (
-            <div
-                className="fullscreen-loader page-title-main-name"
-                style={{
-                    minHeight: "100vh",
-                    width: "100%",
-                }}
-            >
-                <div className="text-center">
-                    <DotLottieReact className='foryoulanding-css'
-                        src="https:lottie.host/73673e65-df58-41a5-87e7-b837c5d00fe8/dJVGVbJuYJ.lottie"
-                        loop
-                        autoplay
-                    />
 
-
-                    <p className="text-muted mb-0">
-                        Please wait while we prepare the best products for you...
-                    </p>
-                </div>
-            </div>
-        );
 
 
     /* ── render ─────────────────────────────────────────────────────────────── */
@@ -6409,10 +6419,39 @@ export default function ProductPage() {
                             )}
                         </div>
 
-                        <div className="row g-4">
+                        <div className="row g-4 position-relative">
+                            {/* Loading Overlay */}
+                            {loading && allProducts.length > 0 && (
+                                <div className="position-absolute w-100 h-100 d-flex justify-content-center align-items-start pt-5"
+                                    style={{ background: 'rgba(255,255,255,0.6)', zIndex: 10, borderRadius: '15px' }}>
+                                    <div className="text-center sticky-top" style={{ top: '200px' }}>
+                                        <DotLottieReact className='foryoulanding-css'
+                                            src="https://lottie.host/73673e65-df58-41a5-87e7-b837c5d00fe8/dJVGVbJuYJ.lottie"
+                                            loop
+                                            autoplay
+                                            style={{ width: '150px', height: '150px' }}
+                                        />
+                                        <p className="page-title-main-name fw-bold">Refining selection...</p>
+                                    </div>
+                                </div>
+                            )}
+
                             {allProducts.length > 0
                                 ? allProducts.map(renderProductCard)
-                                : <div className="col-12 text-center py-5"><h4>No products found</h4><p className="text-muted">Try adjusting your filters.</p></div>}
+                                : loading
+                                    ? (
+                                        <div className="col-12 text-center py-5">
+                                            <DotLottieReact className='foryoulanding-css'
+                                                src="https://lottie.host/73673e65-df58-41a5-87e7-b837c5d00fe8/dJVGVbJuYJ.lottie"
+                                                loop
+                                                autoplay
+                                                style={{ width: '200px', height: '200px', margin: '0 auto' }}
+                                            />
+                                            <p className="text-muted">Loading products...</p>
+                                        </div>
+                                    )
+                                    : <div className="col-12 text-center py-5"><h4>No products found</h4><p className="text-muted">Try adjusting your filters.</p></div>
+                            }
                         </div>
 
                         {loadingMore && (

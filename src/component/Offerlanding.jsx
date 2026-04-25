@@ -1924,7 +1924,7 @@ export default function OffersPage() {
                         color: inWl ? "#dc3545" : "#6c757d",
                         border: "none",
                         // boxShadow: "0 2px 4px rgba(0,0,0,.1)",
-                        background:'transparent'
+                        background: 'transparent'
                     }}
                 >
                     {wishlistLoading[prod._id] ? (
@@ -1945,7 +1945,7 @@ export default function OffersPage() {
                         onClick={() => navigate(`/product/${slugPr}`)}
                     />
 
-                    <div className="card-body d-flex flex-column p-3" 
+                    <div className="card-body d-flex flex-column p-3"
                     // style={{ height: "235px" }}
                     >
                         <div className="text-muted small mb-1 fw-medium text-start text-uppercase">
@@ -2211,29 +2211,29 @@ export default function OffersPage() {
 
 
 
-        if (loading)
-            return (
-                <div
-                    className="fullscreen-loader page-title-main-name"
-                    style={{
-                        minHeight: "100vh",
-                        width: "100%",
-                    }}
-                >
-                    <div className="text-center">
-                        <DotLottieReact className="foryoulanding-css"
-                            src="https:lottie.host/73673e65-df58-41a5-87e7-b837c5d00fe8/dJVGVbJuYJ.lottie"
-                            loop
-                            autoplay
-                        />
-    
-    
-                        <p className="text-muted mb-0">
-                            Please wait while we prepare the best products for you...
-                        </p>
-                    </div>
+    if (loading)
+        return (
+            <div
+                className="fullscreen-loader page-title-main-name"
+                style={{
+                    minHeight: "100vh",
+                    width: "100%",
+                }}
+            >
+                <div className="text-center">
+                    <DotLottieReact className="foryoulanding-css"
+                        src="https:lottie.host/73673e65-df58-41a5-87e7-b837c5d00fe8/dJVGVbJuYJ.lottie"
+                        loop
+                        autoplay
+                    />
+
+
+                    <p className="text-muted mb-0">
+                        Please wait while we prepare the best products for you...
+                    </p>
                 </div>
-            );
+            </div>
+        );
 
     if (error || !data)
         return (

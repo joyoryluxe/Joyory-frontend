@@ -7816,7 +7816,8 @@ const getBrandName = (product) => {
 };
 
 const ProductPage = () => {
-  const { slug } = useParams();
+  const params = useParams();
+  const slug = params.slug || params["*"];
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -8050,19 +8051,40 @@ const ProductPage = () => {
   const buildQueryParams = (cursor = null) => {
     const params = new URLSearchParams();
 
-    // Add filters to query params
+    // ✅ ADD BASE CATEGORY FROM SLUG (Drill-down support)
+    if (slug) {
+      params.append('categoryIds', slug);
+    }
+
+    // ✅ Support Multi-select filters (Plural keys from BrandFilter)
+    const multiSelectFields = [
+      'brandIds', 'categoryIds', 'skinTypes', 'formulations', 'finishes', 'ingredients'
+    ];
+    multiSelectFields.forEach(field => {
+      if (Array.isArray(filters[field])) {
+        filters[field].forEach(val => params.append(field, val));
+      }
+    });
+
+    // ✅ Support Single-select filters (Legacy compatibility)
     if (filters.brand) params.append('brandIds', filters.brand);
     if (filters.category) params.append('categoryIds', filters.category);
     if (filters.skinType) params.append('skinTypes', filters.skinType);
     if (filters.formulation) params.append('formulations', filters.formulation);
+
     if (filters.minRating) params.append('minRating', filters.minRating);
 
-    // Add price range if exists
+    // ✅ Price Range
     if (filters.priceRange) {
       params.append('minPrice', filters.priceRange.min);
-      if (filters.priceRange.max !== null) {
+      if (filters.priceRange.max !== null && filters.priceRange.max !== undefined) {
         params.append('maxPrice', filters.priceRange.max);
       }
+    }
+
+    // ✅ Discount Range
+    if (filters.discountRange && filters.discountRange.min !== undefined) {
+      params.append('minDiscount', filters.discountRange.min);
     }
 
     // Add sorting
@@ -8117,6 +8139,11 @@ const ProductPage = () => {
       setHasMore(pagination.hasMore || false);
       setNextCursor(pagination.nextCursor || null);
 
+      // ✅ Update filters from response
+      if (res.data.filters) {
+        setFilterData(res.data.filters);
+      }
+
       // Update title message
       if (res.data.titleMessage) {
         setPageTitle(res.data.titleMessage);
@@ -8136,7 +8163,7 @@ const ProductPage = () => {
   // ✅ Initial fetch and fetch when filters change
   useEffect(() => {
     fetchProducts(null, true);
-  }, [filters]);
+  }, [filters, slug]);
 
   // ✅ Load more products function
   const loadMoreProducts = useCallback(() => {
@@ -8937,6 +8964,10 @@ const ProductPage = () => {
             <BrandFilter
               filters={filters}
               setFilters={setFilters}
+              filterData={filterData}
+              activeCategorySlug={slug}
+              onCategoryPillClick={(cat) => navigate(`/category/${cat.slug}`)}
+              onClearCategory={() => navigate('/products')}
               currentPage="category"
             />
           </div>
@@ -9017,6 +9048,15 @@ const ProductPage = () => {
                     filters={filters}
                     setFilters={setFilters}
                     filterData={filterData}
+                    activeCategorySlug={slug}
+                    onCategoryPillClick={(cat) => {
+                      navigate(`/category/${cat.slug}`);
+                      setShowFilterOffcanvas(false);
+                    }}
+                    onClearCategory={() => {
+                      navigate('/products');
+                      setShowFilterOffcanvas(false);
+                    }}
                     products={allProducts}
                     onClose={() => setShowFilterOffcanvas(false)}
                     hideBrandFilter={false}

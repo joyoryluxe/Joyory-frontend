@@ -7383,6 +7383,10 @@ export default function CategoryLandingPage() {
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
 
+  const effectiveSlug = slug?.includes("/")
+    ? slug.split("/").pop()
+    : slug;
+
   // State
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -7437,7 +7441,7 @@ export default function CategoryLandingPage() {
       try {
         setLoading(true);
         const { data } = await axios.get(
-          `${API_BASE}/categories/category/${slug}/landing`,
+          `${API_BASE}/categories/category/${effectiveSlug}/landing`,
         );
         setData(data);
       } catch (err) {
@@ -8237,7 +8241,7 @@ export default function CategoryLandingPage() {
                 <SwiperSlide key={sub._id}>
                   <div
                     className="h-100 border-0 text-center cursor-pointer mt-3"
-                    onClick={() => navigate(`productpage/category/${sub.slug}`)}
+                    onClick={() => navigate(`/category/${slug}/${sub.slug}`)}
                   >
                     {sub.thumbnailImage?.[0] && (
                       <img
@@ -8344,7 +8348,7 @@ export default function CategoryLandingPage() {
                         if (isBrandPromo) {
                           navigate(`/brand/${promo.targetSlug}`);
                         } else if (isCategoryPromo) {
-                          navigate(`/Products/category/${promo.targetSlug}`);
+                          navigate(`/category/${promo.targetSlug}`);
                         } else {
                           navigate(`/promotion/${promo.slug}`);
                         }

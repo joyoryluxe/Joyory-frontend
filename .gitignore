@@ -28,3 +28,14 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local VTO and GlowBot files
+public/vto.html
+src/component/GlowBot.jsx
+src/css/GlowBot.css
+src/utils/makeupEngine.js
+src/utils/vtoMakeupEngine.js
+src/css/VirtualTryOn.css
+src/component/Shadefinder.jsx
+src/css/shadefinder.css
+src/component/Mainvirtualtryon.jsx

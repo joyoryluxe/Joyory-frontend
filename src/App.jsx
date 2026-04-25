@@ -558,7 +558,7 @@ import PaymentProcess from "./component/PaymentProcess";
 import ShopProduct from "./component/ShopProduct";
 import OrderDetails from "./component/OrderDetails";
 import OrderTrack from "./component/OrderTrack";
-import Chatbot from "./component/Chatbot";
+import GlowBot from "./component/GlowBot";
 import Virtualtryonhome from "./component/virtualtryonhome";
 import Help from "./component/help";
 import AffiliateSignup from "./component/Affiliatesignup";
@@ -664,7 +664,7 @@ function App() {
             <Route path="/ShopProduct" element={<ShopProduct />} />
             <Route path="/order-details/:shipmentId" element={<OrderDetails />} />
             <Route path="/orderTrack/:awb" element={<OrderTrack />} />
-            <Route path="/Chatbot" element={<Chatbot />} />
+
             <Route path="/Virtualtryonhome" element={<Virtualtryonhome />} />
             <Route path="/Help" element={<Help />} />
             <Route path="/affiliate" element={<Affiliate />} />
@@ -715,6 +715,7 @@ function App() {
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+          <GlowBot />
         </CartProvider>
       </Router>
     </UserProvider>
